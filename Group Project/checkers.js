@@ -29,7 +29,7 @@ main = function () {
 
     // Add an effect / texture to the sphere. Possibilities listed below:
     // STARS, DARKBALL, DARKSTARS, CHECKERFADE, GOLF
-    sphere.addTexture("DARKSTARS");
+    sphere.addTexture("GOLF");
 
     // Pass data to buffers
     vertices = sphere.getVertexMesh();
