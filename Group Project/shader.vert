@@ -63,7 +63,7 @@ void main(void) {
        specular = vec3(1.0, 1.0, 1.0) * pow(nDotH, 1000.0);
     }
 
-    vColor = ambient + diffuse ;//+ specular;
+    vColor = ambient + diffuse + specular;
 
     // Don't forget to set the vertex's position.
     gl_Position = pMatrix * vec4(newVertex, 1.0);
