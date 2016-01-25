@@ -8,7 +8,7 @@ var BLACK  = [0, 0, 0],     WHITE = [1, 1, 1],
 YELLOW = [0.95, 0.95, 0],   ORANGE = [1, 0.6, 0],
 GREEN =  [0, 0.7, 0],       BLUE = [0, 0.1, 0.8],
 RED = [0.8, 0, 0],          OFFWHITE = [0.933, 0.933, 0.933],
-GREY = [0.8, 0.8, 0.8],
+GREY = [0.8, 0.8, 0.8],     BROWN = [1, 0.5, 0.16],
 SQUARE_VERTICES = [
         -0.5, 0, -0.5,
          0.5, 0, -0.5,
@@ -89,15 +89,31 @@ main = function () {
 
     drawBoard = function () {
         cv.clear();
-        cv.setColor(WHITE);
+        cv.setColor(BROWN);
         cv.drawFromBuffers(vb, nb, 0, 8);
     };
 
     drawSquares = function () {
-        mvm.translate(-7.25, 0.05, -7.25);
-        cv.setMvMatrix(mvm);
-        cv.setColor(RED);
-        cv.drawFromBuffers(svb, snb, 0, 4);
+        var i, coords = [], colors = [];
+
+        colors.push(RED);
+        colors.push(BLACK);
+        for (i = 0; i < 8; i += 1) {
+            coords.push(-7 + i * 2);
+        }
+        for (i = 0; i < 64; i++) {
+            mvm.push();
+            mvm.translate(coords[i % 8], 0.05, coords[Math.floor(i / 8)]);
+            mvm.scale(2);
+            cv.setMvMatrix(mvm);
+            if (i % 8 === i % 16) {
+                cv.setColor(colors[i % 2]);
+            } else {
+                cv.setColor(colors[(i + 1) % 2]);
+            }
+            cv.drawFromBuffers(svb, snb, 0, 4);
+            mvm.pop();
+        }
     };
 
     drawBoard();
