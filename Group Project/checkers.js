@@ -380,8 +380,9 @@ main = function () {
             }
 
             if (squareSelect === -1) {
-                row = -Math.floor((thisClick[0] - 7) / 2);
-                column = -Math.floor((thisClick[1] - 6) / 2);
+                // Get the row and column of the clicked square
+                column = -Math.floor((thisClick[0] - 5.5) / (14.7 / 8));
+                row = -Math.floor((thisClick[1] - 4.2) / (14.7/ 8));
                 squareSelect = column + (8 * row);
                 console.log(squareSelect);
                 lastClick.pop();
