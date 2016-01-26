@@ -117,10 +117,11 @@ main = function () {
         // space[] = false. If it can, space[] = true.
         //  piece   -   the piece to be moved
         //  player  -   the active player
-        pv.checkClickable = function (piece, player, space) {
+        pv.checkClickable = function (piece, player) {
             var column, posR1Check, posL1Check, posR2Check, posL2Check,
                     negR1Check, negL1Check, negR2Check, negL2Check, color,
-                    posR1, negR1, posL1, negL1, posR2, negR2, posL2, negL2;
+                    posR1, negR1, posL1, negL1, posR2, negR2, posL2, negL2,
+                    space = [];
 
             if (player === "RED") {
                 color = 1;
@@ -193,12 +194,12 @@ main = function () {
 
                     // Check to see if first right is open
                     if (posR1Check && posR1 === 0) {
-                        space.push(pv.gameboard.indexof(posR1));       // If there is no piece, space[] = true
+                        space.push(piece + 9);       // If there is no piece, space[] = true
                     }
 
                     // Check second right
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
-                        space.push(pv.gameboard.indexof(posR2));    // If there is no piece, and the right
+                        space.push(piece + 18);    // If there is no piece, and the right
                                         // one piece is of the opposite color,
                                         // space[] = true (jump move)
                     }
@@ -211,17 +212,17 @@ main = function () {
 
                     // Check to see if first left is open
                     if (posL1Check && posL1 === 0) {
-                        space.push(pv.gameboard.indexof(posL1));    // If it's open, space[] = true
+                        space.push(piece + 7);    // If it's open, space[] = true
                     }
 
                     // Check to see if first right is open
                     if (posR1Check && posR1 === 0) {
-                        space.push(pv.gameboard.indexof(posR1));    //If it's open, space[] = true
+                        space.push(piece + 9);    //If it's open, space[] = true
                     }
 
                     // Check to see if second right is open
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
-                        space.push(pv.gameboard.indexof(posR2));    // If it is, and the piece in first
+                        space.push(piece + 18);    // If it is, and the piece in first
                                         // right is of the opposite color,
                                         // space[] = true (jump move)
                     }
@@ -231,42 +232,42 @@ main = function () {
                 } else if (column === 7) {
 
                     if (posL1Check && posL1 === 0) {
-                        space.push(pv.gameboard.indexof(posL1));
+                        space.push(piece + 7);
                     }
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
-                        space.push(pv.gameboard.indexof(posL2));
+                        space.push(piece + 14);
                     }
 
                 } else if (column === 6) {
                     if (posL1Check && posL1 === 0) {
-                        space.push(pv.gameboard.indexof(posL1));
+                        space.push(piece + 7);
                     }
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
-                        space.push(pv.gameboard.indexof(posL2));
+                        space.push(piece + 14);
                     }
 
                     if (posR1Check && posR1 === 0) {
-                        space.push(pv.gameboard.indexof(posR1));
+                        space.push(piece + 9);
                     }
 
                 } else {
 
                     if (posL1Check && posL1 === 0) {
-                        space.push(pv.gameboard.indexof(posL1));
+                        space.push(piece + 7);
                     }
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
-                        space.push(pv.gameboard.indexof(posL2));
+                        space.push(piece + 14);
                     }
 
                     if (posR1Check && posR1 === 0) {
-                        space.push(pv.gameboard.indexof(posR1));
+                        space.push(piece + 9);
                     }
 
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
-                        space.push(pv.gameboard.indexof(posR2));
+                        space.push(piece + 18);
                     }
                 }
 
@@ -276,68 +277,68 @@ main = function () {
                 if (column === 0) {
 
                     if (negR1Check && negR1 === 0) {
-                        space.push(pv.gameboard.indexof(negR1));
+                        space.push(piece - 7);
 
                     }
 
                     if (negR2Check && negR2 === 0 && negR1 !== color) {
-                        space.push(pv.gameboard.indexof(negR2));
+                        space.push(piece + 14);
                     }
 
                 } else if (column === 1) {
 
                     if (negL1Check && negL1 === 0) {
-                        space.push(pv.gameboard.indexof(negL1));
+                        space.push(piece - 9);
                     }
 
                     if (negR1Check && negR1 === 0) {
-                        space.push(pv.gameboard.indexof(negR1));
+                        space.push(piece - 7);
                     }
 
                     if (negR2Check && negR2 === 0 && negR1 !== color) {
-                        space.push(pv.gameboard.indexof(negR2));
+                        space.push(piece + 14);
                     }
 
                 } else if (column === 7) {
 
                     if (negL1Check && negL1 === 0) {
-                        space.push(pv.gameboard.indexof(negL1));
+                        space.push(piece - 9);
                     }
 
                     if (negL2Check && negL2 === 0 && negL1 !== color) {
-                        space.push(pv.gameboard.indexof(negL2));
+                        space.push(piece - 18);
                     }
 
                 } else if (column === 6) {
 
                     if (negL1Check && negL1 === 0) {
-                        space.push(pv.gameboard.indexof(negL1));
+                        space.push(piece - 9);
                     }
 
                     if (negL2Check && negL2 === 0 && negL1 !== color) {
-                        space.push(pv.gameboard.indexof(negL2));
+                        space.push(piece - 18);
                     }
 
                     if (negR1Check && negR1 === 0) {
-                        space.push(pv.gameboard.indexof(negR1));
+                        space.push(piece - 7);
                     }
 
                 } else {
 
                     if (negL1Check && negL1 === 0) {
-                        space.push(pv.gameboard.indexof(negL1));
+                        space.push(piece - 9);
                     }
 
                     if (negL2Check && negL2 === 0 && negL1 !== color) {
-                        space.push(pv.gameboard.indexof(negL2));
+                        space.push(piece - 18);
                     }
 
                     if (negR1Check && negR1 === 0) {
-                        space.push(pv.gameboard.indexof(negR1));
+                        space.push(piece - 7);
                     }
 
                     if (negR2Check && negR2 === 0 && negR1 !== color) {
-                        space.push(pv.gameboard.indexof(negR2));
+                        space.push(piece + 14);
                     }
                 }
             }
@@ -626,5 +627,4 @@ main = function () {
 
     game = new Checkers();
     game.playGame();
-    game.animateMove();
 };
