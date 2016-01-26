@@ -193,12 +193,12 @@ main = function () {
 
                     // Check to see if first right is open
                     if (posR1Check && posR1 === 0) {
-                        space[0] = posR1;       // If there is no piece, space[] = true
+                        space.push(pv.gameboard.indexof(posR1));       // If there is no piece, space[] = true
                     }
 
                     // Check second right
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
-                        space[1] = posR2;    // If there is no piece, and the right
+                        space.push(pv.gameboard.indexof(posR2));    // If there is no piece, and the right
                                         // one piece is of the opposite color,
                                         // space[] = true (jump move)
                     }
@@ -211,17 +211,17 @@ main = function () {
 
                     // Check to see if first left is open
                     if (posL1Check && posL1 === 0) {
-                        space[0] = posL1;    // If it's open, space[] = true
+                        space.push(pv.gameboard.indexof(posL1));    // If it's open, space[] = true
                     }
 
                     // Check to see if first right is open
                     if (posR1Check && posR1 === 0) {
-                        space[1] = posR1;    //If it's open, space[] = true
+                        space.push(pv.gameboard.indexof(posR1));    //If it's open, space[] = true
                     }
 
                     // Check to see if second right is open
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
-                        space[2] = posR2;    // If it is, and the piece in first
+                        space.push(pv.gameboard.indexof(posR2));    // If it is, and the piece in first
                                         // right is of the opposite color,
                                         // space[] = true (jump move)
                     }
@@ -231,42 +231,42 @@ main = function () {
                 } else if (column === 7) {
 
                     if (posL1Check && posL1 === 0) {
-                        space[0] = posL1;
+                        space.push(pv.gameboard.indexof(posL1));
                     }
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
-                        space[1] = posL2;
+                        space.push(pv.gameboard.indexof(posL2));
                     }
 
                 } else if (column === 6) {
                     if (posL1Check && posL1 === 0) {
-                        space[0] = posL1;
+                        space.push(pv.gameboard.indexof(posL1));
                     }
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
-                        space[1] =  posL2;
+                        space.push(pv.gameboard.indexof(posL2));
                     }
 
                     if (posR1Check && posR1 === 0) {
-                        space[2] = posR1;
+                        space.push(pv.gameboard.indexof(posR1));
                     }
 
                 } else {
 
                     if (posL1Check && posL1 === 0) {
-                        space[0] = posL1;
+                        space.push(pv.gameboard.indexof(posL1));
                     }
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
-                        space[1] = posL2;
+                        space.push(pv.gameboard.indexof(posL2));
                     }
 
                     if (posR1Check && posR1 === 0) {
-                        space[2] = posR1;
+                        space.push(pv.gameboard.indexof(posR1));
                     }
 
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
-                        space[3] = posR2;
+                        space.push(pv.gameboard.indexof(posR2));
                     }
                 }
 
@@ -276,76 +276,78 @@ main = function () {
                 if (column === 0) {
 
                     if (negR1Check && negR1 === 0) {
-                        space[0] = negR1;
+                        space.push(pv.gameboard.indexof(negR1));
 
                     }
 
                     if (negR2Check && negR2 === 0 && negR1 !== color) {
-                        space[1] = negR2;
+                        space.push(pv.gameboard.indexof(negR2));
                     }
 
                 } else if (column === 1) {
 
                     if (negL1Check && negL1 === 0) {
-                        space[0] = negL1;
+                        space.push(pv.gameboard.indexof(negL1));
                     }
 
                     if (negR1Check && negR1 === 0) {
-                        space[1] = negR1;
+                        space.push(pv.gameboard.indexof(negR1));
                     }
 
                     if (negR2Check && negR2 === 0 && negR1 !== color) {
-                        space[2] = negR2;
+                        space.push(pv.gameboard.indexof(negR2));
                     }
 
                 } else if (column === 7) {
 
                     if (negL1Check && negL1 === 0) {
-                        space[0] = negL1;
+                        space.push(pv.gameboard.indexof(negL1));
                     }
 
                     if (negL2Check && negL2 === 0 && negL1 !== color) {
-                        space[1] = negL2;
+                        space.push(pv.gameboard.indexof(negL2));
                     }
 
                 } else if (column === 6) {
 
                     if (negL1Check && negL1 === 0) {
-                        space[0] = negL1;
+                        space.push(pv.gameboard.indexof(negL1));
                     }
 
                     if (negL2Check && negL2 === 0 && negL1 !== color) {
-                        space[1] = negL2;
+                        space.push(pv.gameboard.indexof(negL2));
                     }
 
                     if (negR1Check && negR1 === 0) {
-                        space[2] = negR1;
+                        space.push(pv.gameboard.indexof(negR1));
                     }
 
                 } else {
 
                     if (negL1Check && negL1 === 0) {
-                        space[0] = negL1;
+                        space.push(pv.gameboard.indexof(negL1));
                     }
 
                     if (negL2Check && negL2 === 0 && negL1 !== color) {
-                        space[1] = negL2;
+                        space.push(pv.gameboard.indexof(negL2));
                     }
 
                     if (negR1Check && negR1 === 0) {
-                        space[2] = negR1;
+                        space.push(pv.gameboard.indexof(negR1));
                     }
 
                     if (negR2Check && negR2 === 0 && negR1 !== color) {
-                        space[3] = negR2;
+                        space.push(pv.gameboard.indexof(negR2));
                     }
                 }
             }
             if (space[0] !== "undefined") {
-                space[-1] = true;
-                return space;
+                space.push(true);
+            } else {
+                space.push(false);
             }
-            return false;
+
+            return space;
         };
 
 
