@@ -36,7 +36,7 @@ void main(void) {
 
     // "Ambient," which is the base color for the surface, even
     // where the light isn't shining on it.
-    ambient = 0.1 * color;
+    ambient = 0.3 * color;
 
     // "Diffuse," which depends on the direction the surface is
     // facing and the direction of the light.
