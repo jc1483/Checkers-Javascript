@@ -9,6 +9,7 @@ RED = [0.8, 0, 0],          OFFWHITE = [0.933, 0.933, 0.933],
 GREY = [0.8, 0.8, 0.8],     BROWN = [1, 0.5, 0.16],
 BOARD_RED = [0.6, 0, 0],     BOARD_BLACK = [0.1, 0.1, 0.1],
 BLUE = [0, 0.75, 1],
+
 SQUARE_VERTICES = [
         -0.5, 0, -0.5,
          0.5, 0, -0.5,
@@ -40,8 +41,8 @@ BOARD_NORMALS = [
         0, -1,  0,
         0, -1,  0,
         0, -1,  0 ],
+  cv, main;
 
-cv, main;
 
 main = function () {
     "use strict";
@@ -108,9 +109,6 @@ main = function () {
 
 
         pv.player = "RED";
-        pv.activePiece = -1;
-        pv.activeSquare = -1;
-        pv.activeJump = false;
         pv.winner = "none";
 
         // Check to see if a piece can make a possible move. If it cannot,
@@ -318,7 +316,7 @@ main = function () {
                         space[1] = negL2;
                     }
 
-                    if (negR1Check && negR1 === 0) {
+                    if (negR1heck && negR1 === 0) {
                         space[2] = negR1;
                     }
 
@@ -342,8 +340,7 @@ main = function () {
                 }
             }
             if (space[0] !== "undefined") {
-                space[-1] = true;
-                return space;
+                return true;
             }
             return false;
         };
@@ -353,9 +350,8 @@ main = function () {
         // Marks pieces and spaces of possible moves
         //  player  -   the active player (RED or WHITE)
         pb.takeTurn = function (thisClick) {
-            var row, column, i, rCoords = [], cCoords = [];
+            var squareSelect, row, column, i, rCoords = [], cCoords = [];
 
-            pv.activePiece = -1;
             // Set up coordinates of squares for easy use in loops
             for (i = 0; i < 8; i += 1) {
                 rCoords.push(-7 + i * 2);
@@ -365,12 +361,10 @@ main = function () {
             // draw board
             pv.drawBoard();
 
-
-            // Mark the clickable (movable) pieces
             for (i = 0; i < 64; i++) {
                 row = i % 8;
                 column = Math.floor(i / 8);
-                if (pv.checkClickable(i, pv.player)[-1]) {
+                if (pv.checkClickable(i, pv.player)) {
                     pv.drawClickable([rCoords[row], cCoords[column]]);
                 }
             }
@@ -380,21 +374,11 @@ main = function () {
                 // Get the row and column of the clicked square
                 column = -Math.floor((thisClick[0] - 5.5) / (14.7 / 8));
                 row = -Math.floor((thisClick[1] - 4.2) / (14.7/ 8));
-                pv.activePiece = column + (8 * row);
-                console.log(pv.activePiece);
+                squareSelect = column + (8 * row);
+                console.log(squareSelect);
                 lastClick.pop();
-                pv.drawMovable();
-            } else {
-                // Get the row and column of the clicked square
-                column = -Math.floor((thisClick[0] - 5.5) / (14.7 / 8));
-                row = -Math.floor((thisClick[1] - 4.2) / (14.7/ 8));
-                pv.activeSquare = column + (8 * row);
-                console.log(pv.activeSquare);
-                lastClick.pop();
-                pb.animateMove();
             }
         };
-
 
         // Draw the brown gameboard from vertices
         pv.drawBoard = function () {
@@ -441,8 +425,7 @@ main = function () {
             pv.drawPieces();
         };
 
-        // Spins the board 180 degrees
-        pb.spinBoard = function () {
+        pv.spinBoard = function () {
             mvm.rotateY(2);
             cv.setMvMatrix(mvm);
             pv.drawBoard();
@@ -451,58 +434,10 @@ main = function () {
             if (frame % 90 === 0) {
                 frame = 0;
             } else {
-                requestAnimationFrame(pb.spinBoard);
+                requestAnimationFrame(pv.spinBoard);
             }
         };
 
-        //animate a movement
-        pb.animateMove = function () {
-            var xMove, zMove, start, end, coords = [];
-            start = [Math.floor(pv.activePiece / 8), pv.activePiece % 8];
-            end = [Math.floor(pv.activeSquare / 8), pv.activeSquare % 8];
-
-            coords.push(-7 + start[0] * 2, -7 + start[1] * 2);
-
-            if (start[1] < end[1]) {
-                zMove = 4;
-            } else {
-                zMove = -4;
-            }
-
-            if (start[0] < end[0]) {
-                xMove = 4;
-            } else {
-                xMove = -4;
-            }
-
-            pv.drawBoard();
-            mvm.push();
-            mvm.translate(frame * (xMove / 90) + coords[0], Math.sin(
-                frame / 29.1) * 2, frame * (zMove / 90) + coords[1]);
-            mvm.scale(0.51);
-            cv.setMvMatrix(mvm);
-
-            if (pv.player === "RED") {
-                cv.setColor(RED);
-            } else {
-                cv.setColor(WHITE);
-            }
-            cv.drawFromBuffers(sphereVertexBuffer, sphereNormalBuffer, 0,
-                        numVertices);
-            mvm.pop();
-
-            frame += 1;
-            if (frame % 90 === 0) {
-                frame = 0;
-                if (pv.activeJump) {
-                    pv.drawMovable();
-                }
-            } else {
-                requestAnimationFrame(pb.animateMove);
-            }
-        };
-
-        // Draws the pieces depending on the gameboard array
         pv.drawPieces = function () {
             var i, coords = [];
 
@@ -560,7 +495,7 @@ main = function () {
             var movableSpace = [], i;
 
             for (i = 0; i < 64; i++) {
-                movableSpace = pv.checkClickable(i, pv.player);
+                checkClickable(i, pv.player, movableSpace)
             }
 
             mvm.push();
@@ -577,12 +512,12 @@ main = function () {
             pv.drawBoard();
         };
 
-        return pb;
+        space[] = pb;
     };
 
     // e - Mouse event object from onmousedown or onmouseup.
     //
-    // Returns line through 3D scene corresponding to 2D mouse
+    // space[] =s line through 3D scene corresponding to 2D mouse
     // coordinates (as array containing two 3-element arrays:
     // the first has the x, y, z coords of the point on the
     // near plane, the second has the coords of the point on
@@ -602,7 +537,7 @@ main = function () {
         f = inv.applyTo([x, y, -1, 1]);
         b = inv.applyTo([x, y, 1, 1]);
 
-        return [f, b];
+        space[] = [f, b];
     };
 
     // e - Mouse event object.
@@ -627,5 +562,6 @@ main = function () {
 
     game = new Checkers();
     game.playGame();
-    game.animateMove();
+
+
 };
