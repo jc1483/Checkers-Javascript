@@ -353,7 +353,7 @@ main = function () {
         // Marks pieces and spaces of possible moves
         //  player  -   the active player (RED or WHITE)
         pb.takeTurn = function (thisClick) {
-            var row, column, i, rCoords = [], cCoords = [];
+            var row, column, i, rCoords = [], cCoords = [], movables = [];
 
             pv.activePiece = -1;
             // Set up coordinates of squares for easy use in loops
@@ -365,13 +365,13 @@ main = function () {
             // draw board
             pv.drawBoard();
 
-
             // Mark the clickable (movable) pieces
             for (i = 0; i < 64; i++) {
-                row = i % 8;
-                column = Math.floor(i / 8);
-                if (pv.checkClickable(i, pv.player)[-1]) {
-                    pv.drawClickable([rCoords[row], cCoords[column]]);
+                column = i % 8;
+                row = Math.floor(i / 8);
+                movables = pv.checkClickable(i, pv.player);
+                if (movables[-1]) {
+                    pv.drawClickable([cCoords[column], rCoords[row]]);
                 }
             }
 
@@ -383,7 +383,10 @@ main = function () {
                 pv.activePiece = column + (8 * row);
                 console.log(pv.activePiece);
                 lastClick.pop();
-                pv.drawMovable();
+                movables = pv.checkClickable(pv.activePiece, pv.player);
+                for (i = 0; i < movables.length; i += 1) {
+                    pv.drawMovable([cCoords[column], rCoords[row]]);
+                }
             } else {
                 // Get the row and column of the clicked square
                 column = -Math.floor((thisClick[0] - 5.5) / (14.7 / 8));
@@ -557,12 +560,6 @@ main = function () {
 
         // Draw an overlay on the spaces to which the selected piece can move
         pv.drawMovable = function (coords) {
-            var movableSpace = [], i;
-
-            for (i = 0; i < 64; i++) {
-                movableSpace = pv.checkClickable(i, pv.player);
-            }
-
             mvm.push();
             mvm.translate(coords[0], 0.05, coords[1]);
             mvm.scale(2.01);
