@@ -117,10 +117,11 @@ main = function () {
         // space[] = false. If it can, space[] = true.
         //  piece   -   the piece to be moved
         //  player  -   the active player
-        pv.checkClickable = function (piece, player, space) {
+        pv.checkClickable = function (piece, player) {
             var column, posR1Check, posL1Check, posR2Check, posL2Check,
                     negR1Check, negL1Check, negR2Check, negL2Check, color,
-                    posR1, negR1, posL1, negL1, posR2, negR2, posL2, negL2;
+                    posR1, negR1, posL1, negL1, posR2, negR2, posL2, negL2,
+                    space = [];
 
             if (player === "RED") {
                 color = 1;
@@ -341,7 +342,7 @@ main = function () {
                     }
                 }
             }
-            if (space[0] !== "undefined") {
+            if (space.length > 0) {
                 space[-1] = true;
                 return space;
             }
@@ -624,5 +625,4 @@ main = function () {
 
     game = new Checkers();
     game.playGame();
-    game.animateMove();
 };
