@@ -50,7 +50,7 @@ main = function () {
             frame = 0, sphere, vertices, numVertices,
             normals, squareVertexBuffer, squareNormalBuffer,
             Checkers, game, sphereNormalBuffer, sphereVertexBuffer,
-            clickLine, mouseDown, lastClick = [];
+            clickLine, firstClick, secondClick, lastClick = [];
 
     // set up canvas and shaders
     cv = canvas("canvas", GREY);
@@ -109,8 +109,6 @@ main = function () {
 
         pv.player = "RED";
         pv.activePiece = -1;
-        pv.activeSquare = -1;
-        pv.activeJump = false;
         pv.winner = "none";
 
         // Check to see if a piece can make a possible move. If it cannot,
@@ -129,6 +127,7 @@ main = function () {
                 color = -1;
             }
 
+            space[-2] = false;
             column = piece % 8;
 
             // Set all checks to fals initially
@@ -200,8 +199,8 @@ main = function () {
                     // Check second right
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
                         space.push(piece + 18);    // If there is no piece, and the right
-                                        // one piece is of the opposite color,
-                                        // space[] = true (jump move)
+                        space[-2] = true;          // one piece is of the opposite color,
+                                                   // space[] = true (jump move)
                     }
 
                 // If we are in the second column from the left, there
@@ -223,8 +222,8 @@ main = function () {
                     // Check to see if second right is open
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
                         space.push(piece + 18);    // If it is, and the piece in first
-                                        // right is of the opposite color,
-                                        // space[] = true (jump move)
+                        space[-2] = true;          // right is of the opposite color,
+                                                   // space[] = true (jump move)
                     }
 
                     // Continue checking possible moves similar to How
@@ -237,6 +236,7 @@ main = function () {
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
                         space.push(piece + 14);
+                        space[-2] = true;
                     }
 
                 } else if (column === 6) {
@@ -246,6 +246,7 @@ main = function () {
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
                         space.push(piece + 14);
+                        space[-2] = true;
                     }
 
                     if (posR1Check && posR1 === 0) {
@@ -260,6 +261,7 @@ main = function () {
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
                         space.push(piece + 14);
+                        space[-2] = true;
                     }
 
                     if (posR1Check && posR1 === 0) {
@@ -268,6 +270,7 @@ main = function () {
 
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
                         space.push(piece + 18);
+                        space[-2] = true;
                     }
                 }
 
@@ -283,6 +286,7 @@ main = function () {
 
                     if (negR2Check && negR2 === 0 && negR1 !== color) {
                         space.push(piece + 14);
+                        space[-2] = true;
                     }
 
                 } else if (column === 1) {
@@ -297,6 +301,7 @@ main = function () {
 
                     if (negR2Check && negR2 === 0 && negR1 !== color) {
                         space.push(piece + 14);
+                        space[-2] = true;
                     }
 
                 } else if (column === 7) {
@@ -307,6 +312,7 @@ main = function () {
 
                     if (negL2Check && negL2 === 0 && negL1 !== color) {
                         space.push(piece - 18);
+                        space[-2] = true;
                     }
 
                 } else if (column === 6) {
@@ -317,6 +323,7 @@ main = function () {
 
                     if (negL2Check && negL2 === 0 && negL1 !== color) {
                         space.push(piece - 18);
+                        space[-2] = true;
                     }
 
                     if (negR1Check && negR1 === 0) {
@@ -331,6 +338,7 @@ main = function () {
 
                     if (negL2Check && negL2 === 0 && negL1 !== color) {
                         space.push(piece - 18);
+                        space[-2] = true;
                     }
 
                     if (negR1Check && negR1 === 0) {
@@ -339,30 +347,25 @@ main = function () {
 
                     if (negR2Check && negR2 === 0 && negR1 !== color) {
                         space.push(piece + 14);
+                        space[-2] = true;
                     }
                 }
             }
-            if (space[0] !== "undefined") {
-                space.push(true);
+            if (space.length > 0) {
+                space[-1] = true;
             } else {
-                space.push(false);
+                space[-1] = false;
             }
 
             return space;
         };
 
+        pv.showPieces = function () {
+            var i, row, column, movables = [], coords = [];
 
-        // Takes a turn based on if the player is "RED" or "WHITE".
-        // Marks pieces and spaces of possible moves
-        //  player  -   the active player (RED or WHITE)
-        pb.takeTurn = function (thisClick) {
-            var row, column, i, rCoords = [], cCoords = [], movables = [];
-
-            pv.activePiece = -1;
             // Set up coordinates of squares for easy use in loops
             for (i = 0; i < 8; i += 1) {
-                rCoords.push(-7 + i * 2);
-                cCoords.push(-7 + i * 2);
+                coords.push(-7 + i * 2);
             }
 
             // draw board
@@ -374,33 +377,74 @@ main = function () {
                 row = Math.floor(i / 8);
                 movables = pv.checkClickable(i, pv.player);
                 if (movables[-1]) {
-                    pv.drawClickable([cCoords[column], rCoords[row]]);
+                    pv.drawClickable([coords[column], coords[row]]);
                 }
             }
 
+            document.onmousedown = firstClick;
+        };
 
-            if (pv.activePiece === -1) {
-                // Get the row and column of the clicked square
-                column = -Math.floor((thisClick[0] - 5.5) / (14.7 / 8));
-                row = -Math.floor((thisClick[1] - 4.2) / (14.7/ 8));
-                pv.activePiece = column + (8 * row);
-                console.log(pv.activePiece);
-                lastClick.pop();
-                movables = pv.checkClickable(pv.activePiece, pv.player);
-                for (i = 0; i < movables.length; i += 1) {
-                    pv.drawMovable([cCoords[column], rCoords[row]]);
-                }
-            } else {
-                // Get the row and column of the clicked square
-                column = -Math.floor((thisClick[0] - 5.5) / (14.7 / 8));
-                row = -Math.floor((thisClick[1] - 4.2) / (14.7/ 8));
-                pv.activeSquare = column + (8 * row);
-                console.log(pv.activeSquare);
-                lastClick.pop();
-                pb.animateMove();
+        pv.showMoves = function (thisClick) {
+            var i, row, column, movables, coords = [];
+
+            // Set up coordinates of squares for easy use in loops
+            for (i = 0; i < 8; i += 1) {
+                coords.push(-7 + i * 2);
+            }
+
+            // Get the row and column of the clicked square
+            column = -Math.floor((thisClick[0] - 5.5) / (14.7 / 8));
+            row = -Math.floor((thisClick[1] - 4.2) / (14.7/ 8));
+
+            pv.activePiece = column + (8 * row);
+            console.log(pv.activePiece);
+
+            movables = pv.checkClickable(pv.activePiece, pv.player);
+            console.log(movables);
+            cv.clear();
+            pv.drawBoard();
+            for (i = 0; i < movables.length; i += 1) {
+                pv.drawMovable([coords[column], coords[row]]);
             }
         };
 
+        pb.makeMove = function (thisClick) {
+            var column, row, moves, piece;
+
+            // Get the row and column of the last clicked piece
+            column = -Math.floor((lastClick[0] - 5.5) / (14.7 / 8));
+            row = -Math.floor((lastClick[1] - 4.2) / (14.7/ 8));
+            piece = [row, column];
+            moves = pv.checkClickable(column + row * 8, pv.player);
+
+            // Get the row and column of the clicked sphere
+            column = -Math.floor((thisClick[0] - 5.5) / (14.7 / 8));
+            row = -Math.floor((thisClick[1] - 4.2) / (14.7/ 8));
+
+            if (moves.includes(column + row * 8)) {
+                pv.animateMove([column, row], piece, moves[-2]);
+
+                pv.gameBoard[piece[1] + piece[0] * 8] = 0;
+                if (pv.player === "RED") {
+                    pv.gameBoard[column + row * 8] = 1;
+                } else {
+                    pv.gameBoard[column + row * 8] = -1;
+                }
+                if (moves[-2]) {
+                    // delete middle piece
+                    pv.gameBoard[((column + piece[0]) / 2) + (
+                            row + piece[1]) * 4] = 0;
+                }
+                pv.spinBoard();
+                if (pv.player === "RED") {
+                    pv.player = "WHITE";
+                } else {
+                    pv.player = "RED";
+                }
+            }
+
+            document.onmousedown = firstClick;
+        };
 
         // Draw the brown gameboard from vertices
         pv.drawBoard = function () {
@@ -448,7 +492,7 @@ main = function () {
         };
 
         // Spins the board 180 degrees
-        pb.spinBoard = function () {
+        pv.spinBoard = function () {
             mvm.rotateY(2);
             cv.setMvMatrix(mvm);
             pv.drawBoard();
@@ -462,20 +506,19 @@ main = function () {
         };
 
         //animate a movement
-        pb.animateMove = function () {
-            var xMove, zMove, start, end, coords = [];
-            start = [Math.floor(pv.activePiece / 8), pv.activePiece % 8];
-            end = [Math.floor(pv.activeSquare / 8), pv.activeSquare % 8];
+        // start end given in [row, column]
+        pv.animateMove = function (start, end) {
+            var xMove, zMove, coords = [];
 
             coords.push(-7 + start[0] * 2, -7 + start[1] * 2);
 
-            if (start[1] < end[1]) {
+            if (start[0] < end[0]) {
                 zMove = 4;
             } else {
                 zMove = -4;
             }
 
-            if (start[0] < end[0]) {
+            if (start[1] < end[1]) {
                 xMove = 4;
             } else {
                 xMove = -4;
@@ -575,6 +618,13 @@ main = function () {
 
         pb.playGame = function () {
             pv.drawBoard();
+            pv.showPieces();
+        };
+
+        pb.takeTurn = function () {
+            pv.showMoves(lastClick);
+            document.onmousedown = secondClick;
+
         };
 
         return pb;
@@ -606,7 +656,7 @@ main = function () {
     };
 
     // e - Mouse event object.
-    mouseDown = function (e) {
+    firstClick = function (e) {
         var fb, fx, fy, fz, bx, by, bz, u, x, z;
 
         fb = clickLine(e);
@@ -617,13 +667,23 @@ main = function () {
         x = u * (bx - fx) + fx;
         z = u * (bz - fz) + fz;
 
-        lastClick.push([x.toFixed(2), z.toFixed(2)]);
-        console.log(lastClick[lastClick.length - 1]);
-        game.takeTurn(lastClick[lastClick.length - 1]);
+        lastClick = [x.toFixed(2), z.toFixed(2)];
+        game.takeTurn();
     };
 
-    //setup user input
-    document.onmousedown = mouseDown;
+    secondClick = function (e) {
+        var fb, fx, fy, fz, bx, by, bz, u, x, z;
+
+        fb = clickLine(e);
+        fx = fb[0][0]; fy = fb[0][1]; fz = fb[0][2];
+        bx = fb[1][0]; by = fb[1][1]; bz = fb[1][2];
+
+        u = (1.5 - fy) / (by - fy);
+        x = u * (bx - fx) + fx;
+        z = u * (bz - fz) + fz;
+
+        game.makeMove([x.toFixed(2), z.toFixed(2)]);
+    };
 
     game = new Checkers();
     game.playGame();
