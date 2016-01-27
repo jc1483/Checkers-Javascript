@@ -1,9 +1,10 @@
 /*jslint plusplus: true, white: true */
 /*global canvas, transform,
         console, document, requestAnimationFrame, Sphere */
-/* @author Joshua Conrady */
+/* @authors Joshua Conrady, Michael Joy*/
 
-//Initialize colors to use later
+//Initialize colors to use later as well as vertices to pass
+//  to the vertex shaders
 var BLACK  = [0, 0, 0],     WHITE = [1, 1, 1],
 RED = [0.8, 0, 0],          OFFWHITE = [0.933, 0.933, 0.933],
 GREY = [0.8, 0.8, 0.8],     BROWN = [1, 0.5, 0.16],
@@ -113,8 +114,10 @@ main = function () {
         pv.jump = false;
         pv.winner = "none";
 
-        // Check to see if a piece can make a possible move. If it cannot,
-        // space[] = false. If it can, space[] = true.
+        // Check to see if a piece can make a possible move and if that
+        // move is a jump. If it cannot move, space[1] = false, and if it
+        // can, space[1] = true. If it cannot jump, space[0] = false, and if
+        // it can, space[0] = true.
         //  piece   -   the piece to be moved
         //  player  -   the active player
         pv.checkClickable = function (piece, player) {
@@ -132,9 +135,11 @@ main = function () {
 
             space.push(false);
             space.push(false);
+
             column = piece % 8;
 
             // Set all checks to fails initially
+
             posR1Check = false;
             posL1Check = false;
             posR2Check = false;
@@ -204,7 +209,7 @@ main = function () {
                     if (posR2Check && posR2 === 0 && posR1 === -color) {
                         space.push(piece + 14);    // If there is no piece, and the right
                         space[0] = true;          // one piece is of the opposite color,
-                                                   // space[] = true (jump move)
+                                                   // space[0] = true (jump move)
                     }
 
                 // If we are in the second column from the left, there
@@ -215,19 +220,20 @@ main = function () {
 
                     // Check to see if first left is open
                     if (posL1Check && posL1 === 0) {
-                        space.push(piece + 9);    // If it's open, space[] = true
-                    }
+                        space.push(piece + 9);    // If it's open, records gameboard
+                    }                             //  position to draw using drawMovable
 
                     // Check to see if first right is open
                     if (posR1Check && posR1 === 0) {
-                        space.push(piece + 7);    //If it's open, space[] = true
+                        space.push(piece + 7);
                     }
 
                     // Check to see if second right is open
                     if (posR2Check && posR2 === 0 && posR1 === -color) {
                         space.push(piece + 14);    // If it is, and the piece in first
                         space[0] = true;          // right is of the opposite color,
-                                                   // space[] = true (jump move)
+                                                   // space[0] = true (jump move)
+
                     }
 
                     // Continue checking possible moves similar to How
@@ -241,6 +247,7 @@ main = function () {
                     if (posL2Check && posL2 === 0 && posL1 === -color) {
                         space.push(piece + 18);
                         space[0] = true;
+
                     }
 
                 } else if (column === 1) {
@@ -355,6 +362,8 @@ main = function () {
                     }
                 }
             }
+
+            // If the space array is longer than the initial booleans, moves are available.
             if (space.length > 2) {
                 space[1] = true;
             }
@@ -362,6 +371,7 @@ main = function () {
             return space;
         };
 
+        // Displays movable pieces as blue
         pv.showPieces = function () {
             var i, row, column, movables = [], coords = [];
 
@@ -378,6 +388,8 @@ main = function () {
                 column = i % 8;
                 row = Math.floor(i / 8);
                 movables = pv.checkClickable(i, pv.player);
+
+                // Sends the coords for clickable pieces to be drawn blue
                 if (movables[1]) {
                     pv.drawClickable([coords[column], coords[row]]);
                 }
@@ -387,6 +399,8 @@ main = function () {
             document.onmousedown = firstClick;
         };
 
+
+        // Displays spaces that a piece can move to as blue
         pv.showMoves = function (thisClick) {
             var i, row, column, movables, coords = [];
 
@@ -405,9 +419,12 @@ main = function () {
 
             pv.activePiece = column + (8 * row);
 
+            // Checks available moves for this piece
             movables = pv.checkClickable(pv.activePiece, pv.player);
             cv.clear();
             pv.drawBoard();
+
+            // If there are moves, sends their coordinates to be drawn as blue
             for (i = 2; i < movables.length; i += 1) {
                 column = movables[i] % 8;
                 row = Math.floor(movables[i] / 8);
@@ -415,6 +432,8 @@ main = function () {
             }
         };
 
+
+        // Moves the selected priece to clicked space
         pb.makeMove = function (thisClick) {
             var column, row, moves, piece;
 
