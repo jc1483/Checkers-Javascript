@@ -50,7 +50,8 @@ main = function () {
             frame = 0, sphere, vertices, numVertices,
             normals, squareVertexBuffer, squareNormalBuffer,
             Checkers, game, sphereNormalBuffer, sphereVertexBuffer,
-            clickLine, firstClick, secondClick, lastClick = [];
+            clickLine, firstClick, secondClick, lastClick = [],
+            thisClick = [];
 
     // set up canvas and shaders
     cv = canvas("canvas", GREY);
@@ -422,7 +423,8 @@ main = function () {
             row = -Math.floor((thisClick[1] - 6.5) / (14.7/ 8));
 
             if (moves.includes(column + row * 8)) {
-                pv.animateMove([column, row], piece, moves[0]);
+                lastClick = [column, row];
+                thisClick = piece;
 
                 pv.gameBoard[piece[1] + piece[0] * 8] = 0;
                 if (pv.player === "RED") {
@@ -501,24 +503,24 @@ main = function () {
             if (frame % 90 === 0) {
                 frame = 0;
             } else {
-                requestAnimationFrame(pb.spinBoard);
+                requestAnimationFrame(pv.spinBoard);
             }
         };
 
         //animate a movement
-        // start end given in [row, column]
-        pv.animateMove = function (start, end) {
+        // lastClick thisClick given in [row, column]
+        pv.animateMove = function () {
             var xMove, zMove, coords = [];
 
-            coords.push(-7 + start[0] * 2, -7 + start[1] * 2);
+            coords.push(-7 + lastClick[0] * 2, -7 + lastClick[1] * 2);
 
-            if (start[0] < end[0]) {
+            if (lastClick[0] < thisClick[0]) {
                 zMove = 4;
             } else {
                 zMove = -4;
             }
 
-            if (start[1] < end[1]) {
+            if (lastClick[1] < thisClick[1]) {
                 xMove = 4;
             } else {
                 xMove = -4;
@@ -547,7 +549,7 @@ main = function () {
                     pv.drawMovable();
                 }
             } else {
-                requestAnimationFrame(pb.animateMove);
+                requestAnimationFrame(pv.animateMove);
             }
         };
 
