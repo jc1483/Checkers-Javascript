@@ -89,6 +89,7 @@ main = function () {
     cv.setPMatrix(pm);
 
     mvm = transform();
+    mvm.rotateY(180);
     cv.setMvMatrix(mvm);
     cv.setLightPosition(5, 20, 5);
 
@@ -193,12 +194,12 @@ main = function () {
 
                     // Check to see if first right is open
                     if (posR1Check && posR1 === 0) {
-                        space.push(piece + 9);       // If there is no piece, space[] = true
+                        space.push(piece + 7);       // If there is no piece, space[] = true
                     }
 
                     // Check second right
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
-                        space.push(piece + 18);    // If there is no piece, and the right
+                        space.push(piece + 14);    // If there is no piece, and the right
                         space[0] = true;          // one piece is of the opposite color,
                                                    // space[] = true (jump move)
                     }
@@ -211,17 +212,17 @@ main = function () {
 
                     // Check to see if first left is open
                     if (posL1Check && posL1 === 0) {
-                        space.push(piece + 7);    // If it's open, space[] = true
+                        space.push(piece + 9);    // If it's open, space[] = true
                     }
 
                     // Check to see if first right is open
                     if (posR1Check && posR1 === 0) {
-                        space.push(piece + 9);    //If it's open, space[] = true
+                        space.push(piece + 7);    //If it's open, space[] = true
                     }
 
                     // Check to see if second right is open
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
-                        space.push(piece + 18);    // If it is, and the piece in first
+                        space.push(piece + 14);    // If it is, and the piece in first
                         space[0] = true;          // right is of the opposite color,
                                                    // space[] = true (jump move)
                     }
@@ -231,45 +232,45 @@ main = function () {
                 } else if (column === 7) {
 
                     if (posL1Check && posL1 === 0) {
-                        space.push(piece + 7);
+                        space.push(piece + 9);
                     }
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
-                        space.push(piece + 14);
+                        space.push(piece + 18);
                         space[0] = true;
                     }
 
                 } else if (column === 6) {
                     if (posL1Check && posL1 === 0) {
-                        space.push(piece + 7);
+                        space.push(piece + 9);
                     }
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
-                        space.push(piece + 14);
+                        space.push(piece + 18);
                         space[0] = true;
                     }
 
                     if (posR1Check && posR1 === 0) {
-                        space.push(piece + 9);
+                        space.push(piece + 7);
                     }
 
                 } else {
 
                     if (posL1Check && posL1 === 0) {
-                        space.push(piece + 7);
+                        space.push(piece + 9);
                     }
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
-                        space.push(piece + 14);
+                        space.push(piece + 18);
                         space[0] = true;
                     }
 
                     if (posR1Check && posR1 === 0) {
-                        space.push(piece + 9);
+                        space.push(piece + 7);
                     }
 
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
-                        space.push(piece + 18);
+                        space.push(piece + 14);
                         space[0] = true;
                     }
                 }
@@ -400,7 +401,9 @@ main = function () {
             console.log(movables);
             cv.clear();
             pv.drawBoard();
-            for (i = 0; i < movables.length; i += 1) {
+            for (i = 2; i < movables.length; i += 1) {
+                column = movables[i] % 8;
+                row = Math.floor(movables[i] / 8);
                 pv.drawMovable([coords[column], coords[row]]);
             }
         };
@@ -604,7 +607,7 @@ main = function () {
         // Draw an overlay on the spaces to which the selected piece can move
         pv.drawMovable = function (coords) {
             mvm.push();
-            mvm.translate(coords[0], 0.05, coords[1]);
+            mvm.translate(coords[0], 0.051, coords[1]);
             mvm.scale(2.01);
             cv.setMvMatrix(mvm);
             cv.setColor(BLUE);
