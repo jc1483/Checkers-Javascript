@@ -127,14 +127,14 @@ main = function () {
                 color = 1;
             } else {
                 color = -1;
-                piece = 63 - piece;  //worked with spinning for some reason
+                //piece = 63 - piece;  //worked with spinning for some reason
             }
 
             space.push(false);
             space.push(false);
             column = piece % 8;
 
-            // Set all checks to fals initially
+            // Set all checks to fails initially
             posR1Check = false;
             posL1Check = false;
             posR2Check = false;
@@ -146,9 +146,9 @@ main = function () {
 
             // Check to see if there is a piece diagonally up and left of the
             // current active piece
-            if (piece + 7 <= 63)  {
+            if (piece + 9 <= 63)  {
                 posL1Check = true;
-                posL1 = pv.gameBoard[piece + 7];
+                posL1 = pv.gameBoard[piece + 9];
             }
             // Check down left
             if (piece - 9 >= 0) {
@@ -156,9 +156,9 @@ main = function () {
                 negL1 = pv.gameBoard[piece - 9];
             }
             // check up right
-            if (piece + 9 <= 63)  {
+            if (piece + 7 <= 63)  {
                 posR1Check = true;
-                posR1 = pv.gameBoard[piece + 9];
+                posR1 = pv.gameBoard[piece + 7];
             }
             // check down right
             if (piece - 7 >= 0) {
@@ -167,19 +167,19 @@ main = function () {
             }
             //Check to see if there is a spot two places up and two spaces left
             // of the current active piece (for jump moves)
-            if (piece + 14 <= 63) {
+            if (piece + 18 <= 63) {
                 posL2Check = true;
-                posL2 = pv.gameBoard[piece + 14];
+                posL2 = pv.gameBoard[piece + 18];
             }
             // check two down, two left
             if (piece - 18 >= 0) {
                 negL2Check = true;
-                negL2 = pv.gameBoard[piece -18];
+                negL2 = pv.gameBoard[piece - 18];
             }
             // check two up, two right
-            if (piece + 18 <= 63) {
+            if (piece + 14 <= 63) {
                 posR2Check = true;
-                posR2 = pv.gameBoard[piece + 18];
+                posR2 = pv.gameBoard[piece + 14];
             }
             // check two down, two right
             if (piece - 14 >= 0) {
@@ -193,7 +193,7 @@ main = function () {
                 // When in the column all the way on the left, there is no,
                 // left squares. Checking left, would lead to faulty display
                 // of possible moves
-                if (column === 0) {
+                if (column === 7) {
 
                     // Check to see if first right is open
                     if (posR1Check && posR1 === 0) {
@@ -211,7 +211,7 @@ main = function () {
                 // are no spaces two columns to the left, checking for
                 // moves in those spots, would lead to faulty display
                 // of possible moves
-                } else if (column === 1) {
+                } else if (column === 6) {
 
                     // Check to see if first left is open
                     if (posL1Check && posL1 === 0) {
@@ -225,25 +225,25 @@ main = function () {
 
                     // Check to see if second right is open
                     if (posR2Check && posR2 === 0 && posR1 === -color) {
-                        space.push(piece + 18);    // If it is, and the piece in first
+                        space.push(piece + 14);    // If it is, and the piece in first
                         space[0] = true;          // right is of the opposite color,
                                                    // space[] = true (jump move)
                     }
 
                     // Continue checking possible moves similar to How
                     // we've done above
-                } else if (column === 7) {
+                } else if (column === 0) {
 
                     if (posL1Check && posL1 === 0) {
-                        space.push(piece + 7);
+                        space.push(piece + 9);
                     }
 
                     if (posL2Check && posL2 === 0 && posL1 === -color) {
-                        space.push(piece + 14);
+                        space.push(piece + 18);
                         space[0] = true;
                     }
 
-                } else if (column === 6) {
+                } else if (column === 1) {
                     if (posL1Check && posL1 === 0) {
                         space.push(piece + 9);
                     }
@@ -284,73 +284,73 @@ main = function () {
                 if (column === 0) {
 
                     if (negR1Check && negR1 === 0) {
-                        space.push(piece - 9);
+                        space.push(piece - 7);
 
                     }
 
                     if (negR2Check && negR2 === 0 && negR1 === -color) {
-                        space.push(piece + 18);
+                        space.push(piece - 14);
                         space[0] = true;
                     }
 
                 } else if (column === 1) {
 
                     if (negL1Check && negL1 === 0) {
-                        space.push(piece - 7);
-                    }
-
-                    if (negR1Check && negR1 === 0) {
                         space.push(piece - 9);
                     }
 
+                    if (negR1Check && negR1 === 0) {
+                        space.push(piece - 7);
+                    }
+
                     if (negR2Check && negR2 === 0 && negR1 === -color) {
-                        space.push(piece + 18);
+                        space.push(piece - 14);
                         space[0] = true;
                     }
 
                 } else if (column === 7) {
 
                     if (negL1Check && negL1 === 0) {
-                        space.push(piece - 7);
+                        space.push(piece - 9);
                     }
 
                     if (negL2Check && negL2 === 0 && negL1 === -color) {
-                        space.push(piece - 14);
+                        space.push(piece - 18);
                         space[0] = true;
                     }
 
                 } else if (column === 6) {
 
                     if (negL1Check && negL1 === 0) {
-                        space.push(piece - 7);
+                        space.push(piece - 9);
                     }
 
                     if (negL2Check && negL2 === 0 && negL1 === -color) {
-                        space.push(piece - 14);
+                        space.push(piece - 18);
                         space[0] = true;
                     }
 
                     if (negR1Check && negR1 === 0) {
-                        space.push(piece - 9);
+                        space.push(piece - 7);
                     }
 
                 } else {
 
                     if (negL1Check && negL1 === 0) {
-                        space.push(piece - 7);
+                        space.push(piece - 9);
                     }
 
                     if (negL2Check && negL2 === 0 && negL1 === -color) {
-                        space.push(piece - 14);
+                        space.push(piece - 18);
                         space[0] = true;
                     }
 
                     if (negR1Check && negR1 === 0) {
-                        space.push(piece - 9);
+                        space.push(piece - 7);
                     }
 
                     if (negR2Check && negR2 === 0 && negR1 === -color) {
-                        space.push(piece + 18);
+                        space.push(piece - 14);
                         space[0] = true;
                     }
                 }
@@ -398,12 +398,14 @@ main = function () {
             // Get the row and column of the clicked square
             column = -Math.floor((thisClick[0] - 5.5) / (14.7 / 8));
             row = -Math.floor((thisClick[1] - 6.5) / (14.7/ 8));
+            if (pv.player === "WHITE") {
+                column = 7 - column;
+                row = 7 - row;
+            }
 
             pv.activePiece = column + (8 * row);
-            console.log([row, column]);
 
             movables = pv.checkClickable(pv.activePiece, pv.player);
-            console.log(movables);
             cv.clear();
             pv.drawBoard();
             for (i = 2; i < movables.length; i += 1) {
@@ -419,14 +421,23 @@ main = function () {
             // Get the row and column of the last clicked piece
             column = -Math.floor((lastClick[0] - 5.5) / (14.7 / 8));
             row = -Math.floor((lastClick[1] - 6.5) / (14.7/ 8));
+            if (pv.player === "WHITE") {
+                column = 7 - column;
+                row = 7 - row;
+            }
             piece = [row, column];
+
             moves = pv.checkClickable(column + row * 8, pv.player);
 
             // Get the row and column of the clicked space
             column = -Math.floor((thisClick[0] - 5.5) / (14.7 / 8));
             row = -Math.floor((thisClick[1] - 6.5) / (14.7/ 8));
+            if (pv.player === "WHITE") {
+                column = 7 - column;
+                row = 7 - row;
+            }
 
-            if (moves.includes(column + row * 8)) {
+            if (moves.includes(column + (row * 8))) {
 
                 pv.gameBoard[piece[1] + piece[0] * 8] = 0;
                 if (pv.player === "RED") {
@@ -434,22 +445,36 @@ main = function () {
                 } else {
                     pv.gameBoard[column + row * 8] = -1;
                 }
-                if (pv.jump) {
+                    // check for jump
+                if (Math.abs((column + row * 8) - (piece[1] + piece[0] * 8)) >= 10) {
                     // delete middle piece
-                    pv.gameBoard[((column + piece[0]) / 2) + (
-                            row + piece[1]) * 4] = 0;
+                    pv.gameBoard[((column + piece[1]) / 2) + (
+                            row + piece[0]) * 4] = 0;
+
+                    // double jump?
+                    //if ()
                 }
                 nextClick = [row, column];
                 lastClick = piece;
                 pv.animateMove();
-                if (pv.player === "RED") {
-                    pv.player = "WHITE";
-                } else {
-                    pv.player = "RED";
-                }
             }
 
+            pv.printBoard();
             document.onmousedown = firstClick;
+        };
+
+        pv.printBoard = function () {
+            var i;
+            for (i = 0; i < pv.gameBoard.length; i += 8) {
+                console.log(pv.gameBoard[i] + "  " +
+                        pv.gameBoard[i + 1] + "  " +
+                        pv.gameBoard[i + 2] + "  " +
+                        pv.gameBoard[i + 3] + "  " +
+                        pv.gameBoard[i + 4] + "  " +
+                        pv.gameBoard[i + 5] + "  " +
+                        pv.gameBoard[i + 6] + "  " +
+                        pv.gameBoard[i + 7] + "  ");
+            }
         };
 
         // Draw the brown gameboard from vertices
@@ -506,6 +531,7 @@ main = function () {
             frame += 1;
             if (frame % 90 === 0) {
                 frame = 0;
+                pv.showPieces();
             } else {
                 requestAnimationFrame(pv.spinBoard);
             }
@@ -516,21 +542,21 @@ main = function () {
         pv.animateMove = function () {
             var xMove, zMove, coords = [];
 
-            coords.push(-5 + lastClick[0] * 2);
-            coords.push(-9 + lastClick[1] * 2);
+            coords.push(-7 + lastClick[0] * 2);
+            coords.push(-7 + lastClick[1] * 2);
 
-            xMove = nextClick[1] - lastClick[0];
-            zMove = nextClick[1] - lastClick[0];
+            xMove = (nextClick[1] - lastClick[1]) * 2;
+            zMove = (nextClick[0] - lastClick[0]) * 2;
 
             pv.drawBoard();
 
             mvm.push();
-            mvm.translate(frame * (xMove / 90) + coords[0], Math.sin(
-                frame / 29.1) * 2, frame * (zMove / 90) + coords[1]);
+            mvm.translate(frame * (xMove / 90) + coords[1], Math.sin(
+                frame / 29.1) * 2, frame * (zMove / 90) + coords[0]);
             mvm.scale(0.51);
             cv.setMvMatrix(mvm);
 
-            if (pv.player === "WHITE") {
+            if (pv.player === "RED") {
                 cv.setColor(RED);
             } else {
                 cv.setColor(WHITE);
@@ -546,6 +572,11 @@ main = function () {
                     pv.drawMovable();
                 } else {
                     pv.spinBoard();
+                }
+                if (pv.player === "WHITE") {
+                    pv.player = "RED";
+                } else {
+                    pv.player = "WHITE";
                 }
             } else {
                 requestAnimationFrame(pv.animateMove);
