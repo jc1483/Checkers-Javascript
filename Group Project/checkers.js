@@ -51,7 +51,7 @@ main = function () {
             normals, squareVertexBuffer, squareNormalBuffer,
             Checkers, game, sphereNormalBuffer, sphereVertexBuffer,
             clickLine, firstClick, secondClick, lastClick = [],
-            thisClick = [];
+            nextClick = [];
 
     // set up canvas and shaders
     cv = canvas("canvas", GREY);
@@ -127,7 +127,7 @@ main = function () {
                 color = 1;
             } else {
                 color = -1;
-                // piece = 63 - piece;  //worked with spinning for some reason
+                piece = 63 - piece;  //worked with spinning for some reason
             }
 
             space.push(false);
@@ -427,8 +427,6 @@ main = function () {
             row = -Math.floor((thisClick[1] - 6.5) / (14.7/ 8));
 
             if (moves.includes(column + row * 8)) {
-                thisClick = [column, row];
-                lastClick = piece;
 
                 pv.gameBoard[piece[1] + piece[0] * 8] = 0;
                 if (pv.player === "RED") {
@@ -441,6 +439,8 @@ main = function () {
                     pv.gameBoard[((column + piece[0]) / 2) + (
                             row + piece[1]) * 4] = 0;
                 }
+                nextClick = [row, column];
+                lastClick = piece;
                 pv.animateMove();
                 if (pv.player === "RED") {
                     pv.player = "WHITE";
@@ -512,16 +512,18 @@ main = function () {
         };
 
         //animate a movement
-        // lastClick thisClick given in [row, column]
+        // lastClick nextClick given in [row, column]
         pv.animateMove = function () {
             var xMove, zMove, coords = [];
 
-            coords.push(-7 + lastClick[0] * 2, -7 + lastClick[1] * 2);
+            coords.push(-5 + lastClick[0] * 2);
+            coords.push(-9 + lastClick[1] * 2);
 
-            xMove = thisClick[0] - lastClick[0];
-            zMove = thisClick[1] - lastClick[1];
+            xMove = nextClick[1] - lastClick[0];
+            zMove = nextClick[1] - lastClick[0];
 
             pv.drawBoard();
+
             mvm.push();
             mvm.translate(frame * (xMove / 90) + coords[0], Math.sin(
                 frame / 29.1) * 2, frame * (zMove / 90) + coords[1]);
@@ -542,6 +544,8 @@ main = function () {
                 frame = 0;
                 if (pv.activeJump) {
                     pv.drawMovable();
+                } else {
+                    pv.spinBoard();
                 }
             } else {
                 requestAnimationFrame(pv.animateMove);
