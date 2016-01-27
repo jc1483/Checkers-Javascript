@@ -110,6 +110,7 @@ main = function () {
 
         pv.player = "RED";
         pv.activePiece = -1;
+        pv.jump = false;
         pv.winner = "none";
 
         // Check to see if a piece can make a possible move. If it cannot,
@@ -126,6 +127,7 @@ main = function () {
                 color = 1;
             } else {
                 color = -1;
+                // piece = 63 - piece;  //worked with spinning for some reason
             }
 
             space.push(false);
@@ -199,7 +201,7 @@ main = function () {
                     }
 
                     // Check second right
-                    if (posR2Check && posR2 === 0 && posR1 !== color) {
+                    if (posR2Check && posR2 === 0 && posR1 === -color) {
                         space.push(piece + 14);    // If there is no piece, and the right
                         space[0] = true;          // one piece is of the opposite color,
                                                    // space[] = true (jump move)
@@ -222,8 +224,8 @@ main = function () {
                     }
 
                     // Check to see if second right is open
-                    if (posR2Check && posR2 === 0 && posR1 !== color) {
-                        space.push(piece + 14);    // If it is, and the piece in first
+                    if (posR2Check && posR2 === 0 && posR1 === -color) {
+                        space.push(piece + 18);    // If it is, and the piece in first
                         space[0] = true;          // right is of the opposite color,
                                                    // space[] = true (jump move)
                     }
@@ -233,11 +235,11 @@ main = function () {
                 } else if (column === 7) {
 
                     if (posL1Check && posL1 === 0) {
-                        space.push(piece + 9);
+                        space.push(piece + 7);
                     }
 
-                    if (posL2Check && posL2 === 0 && posL1 !== color) {
-                        space.push(piece + 18);
+                    if (posL2Check && posL2 === 0 && posL1 === -color) {
+                        space.push(piece + 14);
                         space[0] = true;
                     }
 
@@ -246,7 +248,7 @@ main = function () {
                         space.push(piece + 9);
                     }
 
-                    if (posL2Check && posL2 === 0 && posL1 !== color) {
+                    if (posL2Check && posL2 === 0 && posL1 === -color) {
                         space.push(piece + 18);
                         space[0] = true;
                     }
@@ -261,7 +263,7 @@ main = function () {
                         space.push(piece + 9);
                     }
 
-                    if (posL2Check && posL2 === 0 && posL1 !== color) {
+                    if (posL2Check && posL2 === 0 && posL1 === -color) {
                         space.push(piece + 18);
                         space[0] = true;
                     }
@@ -270,7 +272,7 @@ main = function () {
                         space.push(piece + 7);
                     }
 
-                    if (posR2Check && posR2 === 0 && posR1 !== color) {
+                    if (posR2Check && posR2 === 0 && posR1 === -color) {
                         space.push(piece + 14);
                         space[0] = true;
                     }
@@ -282,73 +284,73 @@ main = function () {
                 if (column === 0) {
 
                     if (negR1Check && negR1 === 0) {
-                        space.push(piece - 7);
+                        space.push(piece - 9);
 
                     }
 
-                    if (negR2Check && negR2 === 0 && negR1 !== color) {
-                        space.push(piece + 14);
+                    if (negR2Check && negR2 === 0 && negR1 === -color) {
+                        space.push(piece + 18);
                         space[0] = true;
                     }
 
                 } else if (column === 1) {
 
                     if (negL1Check && negL1 === 0) {
-                        space.push(piece - 9);
-                    }
-
-                    if (negR1Check && negR1 === 0) {
                         space.push(piece - 7);
                     }
 
-                    if (negR2Check && negR2 === 0 && negR1 !== color) {
-                        space.push(piece + 14);
+                    if (negR1Check && negR1 === 0) {
+                        space.push(piece - 9);
+                    }
+
+                    if (negR2Check && negR2 === 0 && negR1 === -color) {
+                        space.push(piece + 18);
                         space[0] = true;
                     }
 
                 } else if (column === 7) {
 
                     if (negL1Check && negL1 === 0) {
-                        space.push(piece - 9);
+                        space.push(piece - 7);
                     }
 
-                    if (negL2Check && negL2 === 0 && negL1 !== color) {
-                        space.push(piece - 18);
+                    if (negL2Check && negL2 === 0 && negL1 === -color) {
+                        space.push(piece - 14);
                         space[0] = true;
                     }
 
                 } else if (column === 6) {
 
                     if (negL1Check && negL1 === 0) {
-                        space.push(piece - 9);
+                        space.push(piece - 7);
                     }
 
-                    if (negL2Check && negL2 === 0 && negL1 !== color) {
-                        space.push(piece - 18);
+                    if (negL2Check && negL2 === 0 && negL1 === -color) {
+                        space.push(piece - 14);
                         space[0] = true;
                     }
 
                     if (negR1Check && negR1 === 0) {
-                        space.push(piece - 7);
+                        space.push(piece - 9);
                     }
 
                 } else {
 
                     if (negL1Check && negL1 === 0) {
-                        space.push(piece - 9);
+                        space.push(piece - 7);
                     }
 
-                    if (negL2Check && negL2 === 0 && negL1 !== color) {
-                        space.push(piece - 18);
+                    if (negL2Check && negL2 === 0 && negL1 === -color) {
+                        space.push(piece - 14);
                         space[0] = true;
                     }
 
                     if (negR1Check && negR1 === 0) {
-                        space.push(piece - 7);
+                        space.push(piece - 9);
                     }
 
-                    if (negR2Check && negR2 === 0 && negR1 !== color) {
-                        space.push(piece + 14);
+                    if (negR2Check && negR2 === 0 && negR1 === -color) {
+                        space.push(piece + 18);
                         space[0] = true;
                     }
                 }
@@ -379,6 +381,7 @@ main = function () {
                 if (movables[1]) {
                     pv.drawClickable([coords[column], coords[row]]);
                 }
+                pv.jump = movables[0];
             }
 
             document.onmousedown = firstClick;
@@ -397,6 +400,7 @@ main = function () {
             row = -Math.floor((thisClick[1] - 6.5) / (14.7/ 8));
 
             pv.activePiece = column + (8 * row);
+            console.log([row, column]);
 
             movables = pv.checkClickable(pv.activePiece, pv.player);
             console.log(movables);
@@ -418,13 +422,13 @@ main = function () {
             piece = [row, column];
             moves = pv.checkClickable(column + row * 8, pv.player);
 
-            // Get the row and column of the clicked sphere
+            // Get the row and column of the clicked space
             column = -Math.floor((thisClick[0] - 5.5) / (14.7 / 8));
             row = -Math.floor((thisClick[1] - 6.5) / (14.7/ 8));
 
             if (moves.includes(column + row * 8)) {
-                lastClick = [column, row];
-                thisClick = piece;
+                thisClick = [column, row];
+                lastClick = piece;
 
                 pv.gameBoard[piece[1] + piece[0] * 8] = 0;
                 if (pv.player === "RED") {
@@ -432,12 +436,12 @@ main = function () {
                 } else {
                     pv.gameBoard[column + row * 8] = -1;
                 }
-                if (moves[0]) {
+                if (pv.jump) {
                     // delete middle piece
                     pv.gameBoard[((column + piece[0]) / 2) + (
                             row + piece[1]) * 4] = 0;
                 }
-                pv.spinBoard();
+                pv.animateMove();
                 if (pv.player === "RED") {
                     pv.player = "WHITE";
                 } else {
@@ -514,17 +518,8 @@ main = function () {
 
             coords.push(-7 + lastClick[0] * 2, -7 + lastClick[1] * 2);
 
-            if (lastClick[0] < thisClick[0]) {
-                zMove = 4;
-            } else {
-                zMove = -4;
-            }
-
-            if (lastClick[1] < thisClick[1]) {
-                xMove = 4;
-            } else {
-                xMove = -4;
-            }
+            xMove = thisClick[0] - lastClick[0];
+            zMove = thisClick[1] - lastClick[1];
 
             pv.drawBoard();
             mvm.push();
@@ -533,7 +528,7 @@ main = function () {
             mvm.scale(0.51);
             cv.setMvMatrix(mvm);
 
-            if (pv.player === "RED") {
+            if (pv.player === "WHITE") {
                 cv.setColor(RED);
             } else {
                 cv.setColor(WHITE);
