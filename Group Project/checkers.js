@@ -84,9 +84,8 @@ main = function () {
     pm = transform();
     pm.perspectiveNormalization(6, 6, 10, 30);
     // pm.perspectiveNormalization(2, 2, 10, 30);
-    pm.translate(0, 1, -20);
+    pm.translate(0, 0, -20);
     pm.rotateX(50);
-    pm.rotateY(180);
     cv.setPMatrix(pm);
 
     mvm = transform();
@@ -127,7 +126,8 @@ main = function () {
                 color = -1;
             }
 
-            space[-2] = false;
+            space.push(false);
+            space.push(false);
             column = piece % 8;
 
             // Set all checks to fals initially
@@ -199,7 +199,7 @@ main = function () {
                     // Check second right
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
                         space.push(piece + 18);    // If there is no piece, and the right
-                        space[-2] = true;          // one piece is of the opposite color,
+                        space[0] = true;          // one piece is of the opposite color,
                                                    // space[] = true (jump move)
                     }
 
@@ -222,7 +222,7 @@ main = function () {
                     // Check to see if second right is open
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
                         space.push(piece + 18);    // If it is, and the piece in first
-                        space[-2] = true;          // right is of the opposite color,
+                        space[0] = true;          // right is of the opposite color,
                                                    // space[] = true (jump move)
                     }
 
@@ -236,7 +236,7 @@ main = function () {
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
                         space.push(piece + 14);
-                        space[-2] = true;
+                        space[0] = true;
                     }
 
                 } else if (column === 6) {
@@ -246,7 +246,7 @@ main = function () {
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
                         space.push(piece + 14);
-                        space[-2] = true;
+                        space[0] = true;
                     }
 
                     if (posR1Check && posR1 === 0) {
@@ -261,7 +261,7 @@ main = function () {
 
                     if (posL2Check && posL2 === 0 && posL1 !== color) {
                         space.push(piece + 14);
-                        space[-2] = true;
+                        space[0] = true;
                     }
 
                     if (posR1Check && posR1 === 0) {
@@ -270,7 +270,7 @@ main = function () {
 
                     if (posR2Check && posR2 === 0 && posR1 !== color) {
                         space.push(piece + 18);
-                        space[-2] = true;
+                        space[0] = true;
                     }
                 }
 
@@ -286,7 +286,7 @@ main = function () {
 
                     if (negR2Check && negR2 === 0 && negR1 !== color) {
                         space.push(piece + 14);
-                        space[-2] = true;
+                        space[0] = true;
                     }
 
                 } else if (column === 1) {
@@ -301,7 +301,7 @@ main = function () {
 
                     if (negR2Check && negR2 === 0 && negR1 !== color) {
                         space.push(piece + 14);
-                        space[-2] = true;
+                        space[0] = true;
                     }
 
                 } else if (column === 7) {
@@ -312,7 +312,7 @@ main = function () {
 
                     if (negL2Check && negL2 === 0 && negL1 !== color) {
                         space.push(piece - 18);
-                        space[-2] = true;
+                        space[0] = true;
                     }
 
                 } else if (column === 6) {
@@ -323,7 +323,7 @@ main = function () {
 
                     if (negL2Check && negL2 === 0 && negL1 !== color) {
                         space.push(piece - 18);
-                        space[-2] = true;
+                        space[0] = true;
                     }
 
                     if (negR1Check && negR1 === 0) {
@@ -338,7 +338,7 @@ main = function () {
 
                     if (negL2Check && negL2 === 0 && negL1 !== color) {
                         space.push(piece - 18);
-                        space[-2] = true;
+                        space[0] = true;
                     }
 
                     if (negR1Check && negR1 === 0) {
@@ -347,14 +347,12 @@ main = function () {
 
                     if (negR2Check && negR2 === 0 && negR1 !== color) {
                         space.push(piece + 14);
-                        space[-2] = true;
+                        space[0] = true;
                     }
                 }
             }
-            if (space.length > 0) {
-                space[-1] = true;
-            } else {
-                space[-1] = false;
+            if (space.length > 2) {
+                space[1] = true;
             }
 
             return space;
@@ -376,7 +374,7 @@ main = function () {
                 column = i % 8;
                 row = Math.floor(i / 8);
                 movables = pv.checkClickable(i, pv.player);
-                if (movables[-1]) {
+                if (movables[1]) {
                     pv.drawClickable([coords[column], coords[row]]);
                 }
             }
@@ -394,10 +392,9 @@ main = function () {
 
             // Get the row and column of the clicked square
             column = -Math.floor((thisClick[0] - 5.5) / (14.7 / 8));
-            row = -Math.floor((thisClick[1] - 4.2) / (14.7/ 8));
+            row = -Math.floor((thisClick[1] - 6.5) / (14.7/ 8));
 
             pv.activePiece = column + (8 * row);
-            console.log(pv.activePiece);
 
             movables = pv.checkClickable(pv.activePiece, pv.player);
             console.log(movables);
@@ -413,16 +410,16 @@ main = function () {
 
             // Get the row and column of the last clicked piece
             column = -Math.floor((lastClick[0] - 5.5) / (14.7 / 8));
-            row = -Math.floor((lastClick[1] - 4.2) / (14.7/ 8));
+            row = -Math.floor((lastClick[1] - 6.5) / (14.7/ 8));
             piece = [row, column];
             moves = pv.checkClickable(column + row * 8, pv.player);
 
             // Get the row and column of the clicked sphere
             column = -Math.floor((thisClick[0] - 5.5) / (14.7 / 8));
-            row = -Math.floor((thisClick[1] - 4.2) / (14.7/ 8));
+            row = -Math.floor((thisClick[1] - 6.5) / (14.7/ 8));
 
             if (moves.includes(column + row * 8)) {
-                pv.animateMove([column, row], piece, moves[-2]);
+                pv.animateMove([column, row], piece, moves[0]);
 
                 pv.gameBoard[piece[1] + piece[0] * 8] = 0;
                 if (pv.player === "RED") {
@@ -430,7 +427,7 @@ main = function () {
                 } else {
                     pv.gameBoard[column + row * 8] = -1;
                 }
-                if (moves[-2]) {
+                if (moves[0]) {
                     // delete middle piece
                     pv.gameBoard[((column + piece[0]) / 2) + (
                             row + piece[1]) * 4] = 0;
@@ -473,7 +470,7 @@ main = function () {
                 mvm.push();
                 // Initial translation based on column (i % 8) and
                 // row (Math.floor(i / 8))
-                mvm.translate(coords[i % 8], 0.05, coords[Math.floor(i / 8)]);
+                mvm.translate(coords[(i % 8)], 0.05, coords[Math.floor(i / 8)]);
                 // Scale to fit the board
                 mvm.scale(2);
                 cv.setMvMatrix(mvm);
